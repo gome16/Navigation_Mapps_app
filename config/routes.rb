@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
 
-  devise_for :users,skip: [:passwords],
+  devise_for :users,
     controllers: {
       sessions: 'public/users/sessions',
       registrations: 'public/users/registrations',
     }
 
   scope module: :public do
-    resources :users, only: [:show]
+    resources :users, only: [:show, :edit]
     root to: "homes#top"
     get 'homes/about'
   end
