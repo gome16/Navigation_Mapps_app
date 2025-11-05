@@ -64,8 +64,9 @@
         </div>
       <% end %>
 
-      <h3>Cancel my account</h3>
-
+      <div class="">
+        <%= link_to "退会する", unsubscribe_users_path, method: :get, class: "btn btn-danger"%>
+      </div>
 
       <%= link_to "Back", :back %>
     </div>

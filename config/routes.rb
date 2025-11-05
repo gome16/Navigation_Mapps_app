@@ -7,7 +7,13 @@ Rails.application.routes.draw do
     }
 
   scope module: :public do
-    resources :users, only: [:show, :edit]
+    resources :users, only: [:show, :edit] do
+      collection do
+        get "unsubscribe"
+        patch "withdraw"
+      end
+    end
+
     root to: "homes#top"
     get 'homes/about'
   end
