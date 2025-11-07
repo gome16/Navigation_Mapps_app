@@ -59,13 +59,17 @@
           <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
         <% end %>
 
-        <div class="actions">
-          <%= f.submit "Update" %>
+        <div class="form-group row">
+          <div class="col-sm-9 offset-sm-3">
+            <%= f.submit "Sign up", class: "btn btn-success w-100" %>
+          </div>
         </div>
       <% end %>
 
-      <div class="">
-        <%= link_to "退会する", unsubscribe_users_path, method: :get, class: "btn btn-danger"%>
+      <div class="form-group row">
+        <div class="col-sm-9 offset-sm-3">
+          <%= link_to "退会はこちら", unsubscribe_users_path, method: :get, class: "btn btn-danger w-100"%>
+        </div>
       </div>
 
       <%= link_to "Back", :back %>
