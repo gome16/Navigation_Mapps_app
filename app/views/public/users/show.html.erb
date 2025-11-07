@@ -1,0 +1,38 @@
+<div class="container justify-content-center align-items-center">
+  <div class="row">
+
+    <div class="col-md-5 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <%= profile_image_for(@user) %>
+
+          <h5 class="card-title"><%= @user.user_name %></h5>
+          <p class="card-text text-muted"><%= @user.profile %></p>
+
+          <%= link_to "プロフィール編集",  edit_user_registration_path, class: "btn btn-primary mt-3" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h3>最新投稿</h3>
+          <hr>
+          <h5 class="text-center">地図表示欄</h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h3>投稿一覧</h3>
+          <hr>
+          <h5>投稿見出し1</h5>
+          <h5>投稿見出し1</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
