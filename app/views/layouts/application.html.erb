@@ -11,7 +11,10 @@
   </head>
 
   <body>
+    <%= render "shared/navigation-bar" %>
     <p><%= flash[:notice] %></p>
     <%= yield %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
