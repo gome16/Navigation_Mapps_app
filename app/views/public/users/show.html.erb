@@ -17,9 +17,9 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <h3>最新投稿</h3>
+          <h3>投稿</h3>
           <hr>
-          <h5 class="text-center">地図表示欄</h5>
+          <div id="user-posts-map" style="height: 500px;"></div>
         </div>
       </div>
     </div>
@@ -27,12 +27,31 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <h3>投稿一覧</h3>
-          <hr>
-          <h5>投稿見出し1</h5>
-          <h5>投稿見出し1</h5>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @posts.each do |post| %>        
+                <tr>
+                  <td style="width: 200px;">
+                    <%= link_to post_path(post) do %>
+                      <%= post.title %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['Maps_API_Key'] %>&callback=initUserPostsMap" defer>
+</script>
+
+<%= javascript_pack_tag "map_user_show", 'data-turbolinks-track': 'reload' %>

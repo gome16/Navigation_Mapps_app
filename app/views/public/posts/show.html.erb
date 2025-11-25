@@ -1,0 +1,14 @@
+<h1><%= @post.title %></h1>
+
+<div id="map" 
+  data-lat="<%= @post.latitude %>" 
+  data-lng="<%= @post.longitude %>"
+  style="height: 400px;">
+</div>
+
+<h5><%= @post.comment %><h5>
+<% if @post.user_id == current_user.id %>
+  <%= link_to "編集", edit_post_path(@post) %>
+<% end %>
+<%= javascript_pack_tag 'map_show', 'data-turbolinks-track': 'reload' %>
+

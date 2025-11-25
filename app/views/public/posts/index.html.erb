@@ -1,0 +1,29 @@
+<div class="container">
+  <div id="map"></div>
+</div>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @posts.each do |post| %>        
+      <tr>
+        <td>
+          <%= link_to user_path(post.user) do %>
+            <%= image_tag post.user.get_profile_image(90,90) %>
+          <% end %>
+        </td>
+        <td style="width: 200px;">
+          <%= link_to post_path(post) do %>
+            <%= post.title %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= javascript_pack_tag 'map', 'data-turbolinks-track': 'reload' %>

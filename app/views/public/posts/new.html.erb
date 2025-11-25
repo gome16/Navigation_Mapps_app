@@ -1,0 +1,15 @@
+<div id="map"></div>
+
+<%= form_with model: @post, local: true do |f| %>
+  <%= f.hidden_field :latitude, id: "post_latitude" %>
+  <%= f.hidden_field :longitude, id: "post_longitude" %>
+
+  <!-- 他の項目 -->
+  <%= f.text_field :title %>
+  <%= f.text_area :comment %>
+
+  <%= f.submit "投稿する" %>
+<% end %>
+
+<%= javascript_pack_tag 'map_new', 'data-turbolinks-track': 'reload' %>
+

@@ -1,6 +1,22 @@
 class Public::UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
+    @posts = @user.posts.order(created_at: :desc)
+  end
+
+  # 詳細画面の地図表示
+  def posts
+    user = User.find(params[:user_id])
+    posts = user.posts
+
+    render json: posts.map { |post|
+        {
+        id: post.id,
+        title: post.title,
+        latitude: post.latitude,
+        longitude: post.longitude
+        }
+      }
   end
 
     #退会確認画面
