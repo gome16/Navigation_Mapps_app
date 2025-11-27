@@ -36,7 +36,7 @@ async function initMap() {
       const longitude = post.longitude;
       const userName = post.user.name;
       const userImage = post.user.image;
-      const address = post.address;
+      
 
       const postTitle = post.title;
 
@@ -46,23 +46,34 @@ async function initMap() {
         title: postTitle,
       });
 
+      let updatedInfo = "";
+        if (post.updated_at && post.updated_at !== post.created_at) {
+        updatedInfo = `<p class="mb-0">更新日: ${new Date(post.updated_at).toLocaleString()}</p>`;
+        }
+
       // マーカークリック時の情報
       const contentString = `
-        <div class="information container p-0">
+        <div class="p-2 mb-1" style="min-width:200px;">
+          <!-- 投稿ID -->
+          <h6 class="card-title mb-1 border-bottom pb-1">ID: ${post.id}</h6>
+
+          <!-- ユーザー情報 -->
           <a href="${post.user.url}" style="text-decoration: none; color: black;">
-            <div class="mb-3 d-flex align-posts-center">
-              <img class="rounded-circle mr-2" src="${userImage}" width="40" height="40">
-              <p class="lead m-0 font-weight-bold">${userName}</p>
+            <div class="d-flex align-items-center mb-3">
+              <img class="rounded-circle me-2" src="${userImage}" width="40" height="40">
+              <h6 class="lead m-0 fw-bold">${userName}</h6>
             </div>
           </a>
-          <div>
-            <a href="${post.url}" style="text-decoration: none; color: black;">
-              <h1 class="h4 font-weight-bold">${postTitle}</h1>
-            </a>
-            <p class="text-muted">${address}</p>
-          </div>
+
+          <!-- 投稿タイトルと日時 -->
+          <a href="${post.url}" style="text-decoration: none; color: black;">
+            <h5 class="card-subtitle mb-2">${postTitle}</h5>
+          </a>
+          <p class="mb-0">投稿日時: ${new Date(post.created_at).toLocaleString()}</p>
+          ${updatedInfo}
         </div>
       `;
+
       
       const infowindow = new google.maps.InfoWindow({
         content: contentString,

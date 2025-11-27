@@ -55,7 +55,7 @@ async function initShowMap() {
     const map = new Map(mapEl, {
       zoom: 15,
       center: { lat, lng },
-      mapId: "YOUR_MAP_ID", // 必要なら置換
+      mapId: "YOUR_MAP_ID",
     });
 
     // マーカー

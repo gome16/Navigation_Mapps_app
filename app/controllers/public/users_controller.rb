@@ -28,8 +28,9 @@ class Public::UsersController < ApplicationController
 
   #退会用アクション
   def withdraw
-    @user=current_user
+    @user = current_user
     @user.update(is_deleted: true)
+    current_user.posts.destroy_all
     reset_session
     flash[:notice] = "退会が完了しました" 
     redirect_to root_path

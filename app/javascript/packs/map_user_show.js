@@ -1,12 +1,9 @@
 // ======================================================
-// users_show_map.js
 // users/show ページにてそのユーザーの投稿マーカー一覧を表示
 // ======================================================
 console.log("USERS_SHOW_MAP.JS loaded");
 
-// ----------------------
-// 共通 Google Maps ローダー
-// ----------------------
+// Google Maps ローダー（二重読み込み防止）
 async function loadGoogleMaps() {
   if (window.googleMapsLoaderAdded) {
     console.log("Google Maps already loaded");
@@ -50,9 +47,11 @@ window.initUserPostsMap = async function () {
   // importLibrary で Maps を取得
   const { Map } = await google.maps.importLibrary("maps");
 
+  // 地図生成
   const map = new Map(mapEl, {
-    zoom: 4,
-    center: { lat: 35.0, lng: 135.0 }, // 日本中心
+    zoom: 15,
+    center: { lat: 35.0, lng: 135.0 },
+    mapId: "YOUR_MAP_ID", // 個別投稿マップと同じ MapStyle
   });
 
   window.userPostsMap = map;
@@ -70,16 +69,17 @@ window.initUserPostsMap = async function () {
   const bounds = new google.maps.LatLngBounds();
 
   posts.forEach((post) => {
+    // updated_at が created_at と異なる場合のみ表示
     let updatedInfo = "";
     if (post.updated_at && post.updated_at !== post.created_at) {
-      updatedInfo = `<p>更新日: ${new Date(post.updated_at).toLocaleString()}</p>`;
+      updatedInfo = `<p class="mb-0">更新日: ${new Date(post.updated_at).toLocaleString()}</p>`;
     }
 
     const infoWindowContent = `
-      <div class="container">
-        <h5 class="mb-1 border-bottom">${post.id}</h5>
-        <h5 class="mb-3">${post.title}</h5>
-        <p class= mb-0>投稿日時: ${new Date(post.created_at).toLocaleString()}</p>
+      <div class="card p-2 mb-1" style="min-width:200px;">
+        <h6 class="card-title mb-1 border-bottom pb-1">ID: ${post.id}</h6>
+        <h6 class="card-subtitle mb-2">${post.title}</h6>
+        <p class="mb-0">投稿日時: ${new Date(post.created_at).toLocaleString()}</p>
         ${updatedInfo}
       </div>
     `;
@@ -100,7 +100,11 @@ window.initUserPostsMap = async function () {
     bounds.extend({ lat: post.latitude, lng: post.longitude });
   });
 
+  // 全マーカーを収めつつ最大ズーム 15 に制限
   map.fitBounds(bounds);
+  google.maps.event.addListenerOnce(map, "bounds_changed", () => {
+    if (map.getZoom() > 15) map.setZoom(15);
+  });
 
   console.log("initUserPostsMap: map initialized successfully");
   return map;

@@ -15,7 +15,7 @@
       <%= link_to "退会しない", edit_user_registration_path, class: "btn btn-primary btn-block btn-sm"%>
     </div>
     <div class="col-2">
-      <%= link_to "退会する", withdraw_users_path,method: :patch, class: "btn btn-danger btn-block btn-sm" %>
+      <%= link_to "退会する", withdraw_users_path, method: :patch, data: { confirm: "本当に退会しますか？" }, class: "btn btn-danger btn-block btn-sm" %>
     </div>
   </div>
 </div>
