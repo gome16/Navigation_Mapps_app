@@ -1,0 +1,35 @@
+<footer class="bg-dark text-white text-center text-md-start mt-5 ">
+  <div class="container-fluid p-4" style="max-width: 1000px;">
+    <div class="row">
+
+      <div class="col-md-4 mb-4">
+        <h6 class="text-uppercase fw-bold">サービス</h6>
+        <ul class="list-unstyled">
+          <li><%= link_to "このサイトについて", homes_about_path, class:"text-white" %></li>
+          <li><%= link_to "投稿一覧", posts_path, class:"text-white" %></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h6 class="text-uppercase fw-bold">サポート</h6>
+        <ul class="list-unstyled">
+          <li>お問い合わせ</li>
+          <li>FAQ</li>
+        </ul>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h6 class="text-uppercase fw-bold">フォロー</h6>
+        <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="text-center p-3 bg-dark text-white border-top">
+    © <%= Time.current.year %> Navigation Map. All rights reserved.
+  </div>
+</footer>
+

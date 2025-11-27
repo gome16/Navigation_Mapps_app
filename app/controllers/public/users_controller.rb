@@ -32,7 +32,7 @@ class Public::UsersController < ApplicationController
     @user.update(is_deleted: true)
     current_user.posts.destroy_all
     reset_session
-    flash[:notice] = "退会が完了しました" 
+    flash[:alert] = "退会が完了しました" 
     redirect_to root_path
   end
 end
