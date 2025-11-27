@@ -1,15 +1,47 @@
-<div id="map"></div>
+<div class="container justify-content-center align-items-center">
+  <div class="row">
+    <!-- 地図表示画面 -->
+    <div class="col-md-12 mt-5 ">
+      <h4>新規投稿</h4>
+      <div class="card">
+        <div class="card-body">
+          <div id="map"</div>
+        </div>
+      </div>
+    </div>
 
-<%= form_with model: @post, local: true do |f| %>
-  <%= f.hidden_field :latitude, id: "post_latitude" %>
-  <%= f.hidden_field :longitude, id: "post_longitude" %>
+    <!-- 下部投稿詳細画面 -->
+    <div class="col-md-12 mt-2">
+      <div class="card">        
+        <div class="card-body">
+          <%= form_with model: @post, local: true do |f| %>
+            <%= f.hidden_field :latitude, id: "post_latitude" %>
+            <%= f.hidden_field :longitude, id: "post_longitude" %>
 
-  <!-- 他の項目 -->
-  <%= f.text_field :title %>
-  <%= f.text_area :comment %>
+            <div class="row mb-3 align-items-center">
+              <div class="col-md-2 mr-0">
+                <%= f.label :title, "タイトル", class: "form-label" %>
+              </div>
+              <div class="col-md-10">
+                <%= f.text_field :title, class: "form-control" %>
+              </div>
+            </div>
 
-  <%= f.submit "投稿する" %>
-<% end %>
+            <div class="row mb-3 align-items-center">
+              <div class="col-md-2">
+                <%= f.label :comment, "本文", class: "form-label" %>
+              </div>
+              <div class="col-md-10">
+                <%= f.text_area :comment, class: "form-control" %>
+              </div>
+            </div>
+
+            <%= f.submit "投稿する", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%= javascript_pack_tag 'map_new', 'data-turbolinks-track': 'reload' %>
-
