@@ -12,8 +12,18 @@
 
   <body>
     <%= render "shared/navigation-bar" %>
-    <p><%= flash[:notice] %></p>
+    <% if flash[:notice] %>
+      <div class="alert alert-success text-center mb-0">
+        <%= flash[:notice] %>
+      </div>
+    <% elsif flash[:alert] %>
+      <div class="alert alert-danger text-center mb-0">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
     <%= yield %>
+    <%= render "shared/footer" %>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-jpostal-ja@2.14.45/jquery.jpostal.min.js"></script>
