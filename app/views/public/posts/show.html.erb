@@ -5,10 +5,14 @@
       <h4><%= @post.title %></h4>
       <div class="card">
         <div class="card-body">
-          <div id="map" 
-            data-lat="<%= @post.latitude %>" 
-            data-lng="<%= @post.longitude %>"
-            style="height: 400px;">
+          <div id="map"
+            data-lat="<%= @post.latitude || 35.681236 %>"
+            data-lng="<%= @post.longitude || 139.767125 %>">
+            data-map-id="DEMO_MAP_ID"
+            data-posts='<%= raw(@post.to_json(
+                methods: [:latitude, :longitude, :title, :created_at, :updated_at]
+              )) %>' 
+            style="height: 500px;">
           </div>
         </div>
       </div>
@@ -19,6 +23,10 @@
       <div class="card">        
         <div class="card-body">
           <h4>投稿詳細</h4>
+          <hr>
+          <%= link_to user_path(@post.user) do %>
+            <h5><%= @post.user.user_name %></h5>
+          <% end %>
           <hr>
           <h5><%= @post.comment %><h5>
           <hr>
