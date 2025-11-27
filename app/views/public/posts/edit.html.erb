@@ -1,23 +1,14 @@
-<div id="map"
-  data-lat="<%= @post.latitude %>"
-  data-lng="<%= @post.longitude %>"
-  style="height: 400px;">
-</div>
+<h1>投稿編集</h1>
 
-<%= form_with model: @post, local: true do |f| %>
+<div id="map" 
+     data-lat="<%= @post.latitude %>" 
+     data-lng="<%= @post.longitude %>" 
+     style="height: 400px;"></div>
+
+<%= form_with(model: @post) do |f| %>
   <%= f.hidden_field :latitude, id: "post_latitude" %>
   <%= f.hidden_field :longitude, id: "post_longitude" %>
-  
-  <%= f.text_field :title %>
-  <%= f.text_area :comment %>
-
   <%= f.submit "更新" %>
-  <%= link_to "投稿削除", post_path(@post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger" %>
 <% end %>
 
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['Maps_API_Key'] %>&callback=initEditPostMap"
-  defer>
-</script>
-
-<%= javascript_pack_tag 'map_edit', 'data-turbolinks-track': 'reload' %>
+<%= javascript_pack_tag 'map_edit' %>
