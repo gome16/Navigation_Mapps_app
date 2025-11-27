@@ -14,6 +14,8 @@ json.data do
     json.longitude post.longitude
     json.title post.title
     json.id post.id
+    json.created_at post.created_at
+    json.updated_at post.updated_at
     json.url post_path(post)
   end
 end

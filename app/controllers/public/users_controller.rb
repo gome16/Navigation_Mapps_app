@@ -13,6 +13,8 @@ class Public::UsersController < ApplicationController
         {
         id: post.id,
         title: post.title,
+        created_at: post.created_at,
+        updated_at: post.updated_at,
         latitude: post.latitude,
         longitude: post.longitude
         }

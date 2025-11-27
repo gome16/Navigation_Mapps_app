@@ -28,7 +28,7 @@ if (!window.googleMapsLoaderAdded) {
   });
 }
 
-// --- importLibrary が使えるようになるまで待つ ---
+// --- importLibrary 読み込み待機---
 async function waitForImportLibrary(timeoutMs = 5000, intervalMs = 100) {
   const start = Date.now();
   while (true) {
@@ -49,7 +49,7 @@ async function initEditMap() {
       return;
     }
 
-    const lat = parseFloat(mapEl.dataset.lat) || 35.6895;  // デフォルト: 東京
+    const lat = parseFloat(mapEl.dataset.lat) || 35.6895;
     const lng = parseFloat(mapEl.dataset.lng) || 139.6917;
 
     await waitForImportLibrary(7000);
@@ -60,17 +60,17 @@ async function initEditMap() {
     const map = new Map(mapEl, {
       zoom: 15,
       center: { lat, lng },
-      mapId: "YOUR_MAP_ID",  // 必要に応じて置換
+      mapId: "YOUR_MAP_ID",
     });
 
-    // ドラッグ禁止マーカー
+    // ドラッグによるマーカー設置を禁止
     const marker = new AdvancedMarkerElement({
       map,
       position: { lat, lng },
       draggable: false
     });
 
-    // hiddenフィールド
+    // hiddenフィールドによる軽度・緯度取得
     const latInput = document.getElementById("post_latitude");
     const lngInput = document.getElementById("post_longitude");
 

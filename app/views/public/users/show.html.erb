@@ -1,44 +1,58 @@
 <div class="container justify-content-center align-items-center">
   <div class="row">
 
+    <!-- ユーザープロフィール画面 -->
     <div class="col-md-5 mb-4">
       <div class="card">
         <div class="card-body">
-          <%= profile_image_for(@user) %>
+          <div class="d-flex align-items-center">
+            <%= image_tag @user.get_profile_image(70, 70), class: "profile_image mr-2" %>
+            <h5 class="card-title mb-0"><%= @user.user_name %></h5>
+          </div>
+          <p class="card-text text-muted mt-4"><%= @user.profile %></p>
+          <% if @user == current_user %>
+            <%= link_to "プロフィール編集", edit_user_registration_path, class: "btn btn-success" %>
+          <% end %>
 
-          <h5 class="card-title"><%= @user.user_name %></h5>
-          <p class="card-text text-muted"><%= @user.profile %></p>
-
-          <%= link_to "プロフィール編集",  edit_user_registration_path, class: "btn btn-primary mt-3" %>
         </div>
       </div>
     </div>
 
+    <!-- 地図表示画面 -->
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <h3>投稿</h3>
-          <hr>
           <div id="user-posts-map" style="height: 500px;"></div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-12">
-      <div class="card">
+    <!-- 下部投稿一覧 -->
+    <div class="col-md-12 mt-2">
+      <div class="card">        
         <div class="card-body">
-          <table class="table table-sm">
+          <h4>投稿一覧</h4>
+          <table class="table table-m custom-post-table">
             <thead>
               <tr>
                 <th></th>
+                <th>タイトル</th>
+                <th>投稿日</th>
+                <th>更新日</th>
               </tr>
             </thead>
+
             <tbody>
-              <% @posts.each do |post| %>        
-                <tr>
-                  <td style="width: 200px;">
-                    <%= link_to post_path(post) do %>
-                      <%= post.title %>
+              <% @posts.each do |post| %>
+                <tr class="post-row" data-href="<%= post_path(post) %>">
+                  <td><%= post.id %></td>
+                  <td><%= post.title %></td>
+                  <td><%= post.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                  <td>
+                    <% if post.created_at != post.updated_at %>
+                      <%= post.updated_at.strftime("%Y-%m-%d %H:%M") %>
+                    <% else %>
+                      -
                     <% end %>
                   </td>
                 </tr>
@@ -51,6 +65,7 @@
   </div>
 </div>
 
+<!-- google_map_api関係 -->
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['Maps_API_Key'] %>&callback=initUserPostsMap" defer>
 </script>
 
