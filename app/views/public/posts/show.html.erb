@@ -22,6 +22,11 @@
           <hr>
           <h5><%= @post.comment %><h5>
           <hr>
+          <p>投稿日時: <%= @post.created_at.strftime("%Y-%m-%d %H:%M") %></p>
+          <% if @post.created_at != @post.updated_at %>
+            <p>更新日時: <%= @post.updated_at.strftime("%Y-%m-%d %H:%M") %></p>
+          <% end %>
+          <hr>
           <% if @post.user_id == current_user.id %>
             <%= link_to "編集", edit_post_path(@post), class: "btn btn-success" %>
           <% end %>

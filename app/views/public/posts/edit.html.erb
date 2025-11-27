@@ -1,14 +1,55 @@
-<h1>投稿編集</h1>
+<div class="container justify-content-center align-items-center">
+  <div class="row">
+    <!-- 地図表示画面 -->
+    <div class="col-md-12 mt-5 ">
+      <h4>投稿編集</h4>
+      <div class="card">
+        <div class="card-body">
+          <div id="map" 
+            data-lat="<%= @post.latitude %>" 
+            data-lng="<%= @post.longitude %>" 
+            style="height: 400px;">
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div id="map" 
-     data-lat="<%= @post.latitude %>" 
-     data-lng="<%= @post.longitude %>" 
-     style="height: 400px;"></div>
+    <!-- 下部投稿詳細画面 -->
+    <div class="col-md-12 mt-2">
+      <div class="card">        
+        <div class="card-body">
+          <%= form_with(model: @post) do |f| %>
+            <%= f.hidden_field :latitude, id: "post_latitude" %>
+            <%= f.hidden_field :longitude, id: "post_longitude" %>
 
-<%= form_with(model: @post) do |f| %>
-  <%= f.hidden_field :latitude, id: "post_latitude" %>
-  <%= f.hidden_field :longitude, id: "post_longitude" %>
-  <%= f.submit "更新" %>
-<% end %>
+            <div class="row mb-3 align-items-center">
+              <div class="col-md-2 mr-0">
+                <%= f.label :title, "タイトル", class: "form-label" %>
+              </div>
+              <div class="col-md-10">
+                <%= f.text_field :title, class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+              <div class="col-md-2">
+                <%= f.label :comment, "本文", class: "form-label" %>
+              </div>
+              <div class="col-md-10">
+                <%= f.text_area :comment, class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between mt-3">
+              <%= f.submit "変更する", class: "btn btn-success mb-2 mb-md-0" %>
+              <%= link_to "削除する", post_path(@post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger" %>
+            </div>
+
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%= javascript_pack_tag 'map_edit' %>
