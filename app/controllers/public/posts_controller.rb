@@ -1,5 +1,5 @@
 class Public::PostsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
   def index
     @posts = Post.all
@@ -23,7 +23,7 @@ class Public::PostsController < ApplicationController
     @post.user_id = current_user.id
 
     if @post.save
-      flash[:notice] = "投稿完了しました。"
+      flash[:notice] = "投稿完了しました"
       redirect_to post_path(@post)
     else
       render :new
@@ -35,11 +35,10 @@ class Public::PostsController < ApplicationController
   end
 
   def update
-    @post = Post.new(post_params)
-    @post.user_id = current_user.id
+    @post = Post.find(params[:id])
 
-    if @post.save
-      flash[:notice] = "変更しました。"
+    if @post.update(post_params)
+      flash[:notice] = "変更されました"
       redirect_to post_path(@post)
     else
       render :edit
