@@ -1,3 +1,12 @@
 // Place all the styles related to the homes controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.logo-font {
+  font-family: 'Poppins', sans-serif; /* Google Fonts 例 */
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: #2c3e50;
+  text-transform: uppercase;
+}
