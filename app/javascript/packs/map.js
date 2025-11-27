@@ -1,4 +1,5 @@
 // posts/indexにて全投稿を表示する機能
+console.log("map.js loaded");
 
 // ブートストラップ ローダ <%= javascript_pack_tag 'map', 'data-turbolinks-track': 'reload' %>を読み込む記載
 if (!window.googleMapsLoaderAdded) {
