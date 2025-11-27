@@ -15,3 +15,32 @@
  */
 
  @import 'bootstrap/scss/bootstrap';
+
+ body {
+    font-family: "Helvetica", "Arial", "Hiragino Sans", "Meiryo", sans-serif;
+  }
+
+ #map {
+    width: 100%;
+    height: calc(100vh - 88px - 179px);
+  }
+
+  .profile_image {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 70px;
+    height: 70px;
+  }
+
+  /* ホバー時に影をつける　*/
+  .custom-post-table .post-row {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border-spacing: 0 10px;
+  }
+
+  .custom-post-table .post-row:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    background-color: #fff;
+  }

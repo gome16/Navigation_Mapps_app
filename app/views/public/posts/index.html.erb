@@ -1,28 +1,11 @@
 <div class="container justify-content-center align-items-center">
   <div class="row">
-
-    <!-- ユーザープロフィール画面 -->
-    <div class="col-md-5 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <%= image_tag @user.get_profile_image(70, 70), class: "profile_image mr-2" %>
-            <h5 class="card-title mb-0"><%= @user.user_name %></h5>
-          </div>
-          <p class="card-text text-muted mt-4"><%= @user.profile %></p>
-          <% if @user == current_user %>
-            <%= link_to "プロフィール編集", edit_user_registration_path, class: "btn btn-success" %>
-          <% end %>
-
-        </div>
-      </div>
-    </div>
-
     <!-- 地図表示画面 -->
-    <div class="col-md-12">
+    <div class="col-md-12 mt-5 ">
+      <h4>投稿一覧</h4>
       <div class="card">
         <div class="card-body">
-          <div id="user-posts-map" style="height: 500px;"></div>
+          <div id="map"></div>
         </div>
       </div>
     </div>
@@ -44,7 +27,7 @@
 
             <tbody>
               <% @posts.each do |post| %>
-                <tr class="post-row" data-href="<%= post_path(post) %>">
+                <tr class="post-row border-bottom" data-href="<%= post_path(post) %>">
                   <td><%= post.id %></td>
                   <td><%= post.title %></td>
                   <td><%= post.created_at.strftime("%Y-%m-%d %H:%M") %></td>
@@ -65,8 +48,4 @@
   </div>
 </div>
 
-<!-- google_map_api関係 -->
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['Maps_API_Key'] %>&callback=initUserPostsMap" defer>
-</script>
-
-<%= javascript_pack_tag "map_user_show", 'data-turbolinks-track': 'reload' %>
+<%= javascript_pack_tag 'map', 'data-turbolinks-track': 'reload' %>
