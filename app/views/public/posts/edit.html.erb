@@ -5,9 +5,9 @@
       <h4>投稿編集</h4>
       <div class="card">
         <div class="card-body">
-          <div id="map" 
-            data-lat="<%= @post.latitude %>" 
-            data-lng="<%= @post.longitude %>" 
+          <div id="map"
+            data-lat="<%= @post&.latitude || 35.6895 %>"
+            data-lng="<%= @post&.longitude || 139.6917 %>"
             style="height: 400px;">
           </div>
         </div>

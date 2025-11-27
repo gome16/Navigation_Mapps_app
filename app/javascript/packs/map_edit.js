@@ -7,38 +7,24 @@ console.log("EDIT_MAP.JS loaded");
 if (!window.googleMapsLoaderAdded) {
   window.googleMapsLoaderAdded = true;
 
-  (g => {
-    var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window;
-    b = b[c] || (b[c] = {});
-    var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams;
-    var u = () => h || (h = new Promise(async (f, n) => {
-      await (a = m.createElement("script"));
-      e.set("libraries", [...r] + "");
-      for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-      e.set("callback", c + ".maps." + q);
-      a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-      d[q] = f;
-      a.onerror = () => h = n(Error(p + " could not load."));
-      a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-      m.head.append(a);
-    }));
-    d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n));
-  })({
-    key: process.env.Maps_API_Key
-  });
+  const apiKey = process.env.Maps_API_Key || "YOUR_API_KEY"; // 環境変数または仮のキー
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
 }
 
-// --- importLibrary 読み込み待機---
+// --- importLibrary が使えるまで待機 ---
 async function waitForImportLibrary(timeoutMs = 5000, intervalMs = 100) {
   const start = Date.now();
-  while (true) {
-    if (window.google && google.maps && typeof google.maps.importLibrary === 'function') return;
-    if (Date.now() - start > timeoutMs) throw new Error("google.maps.importLibrary not available within timeout");
+  while (!(window.google && google.maps && typeof google.maps.importLibrary === "function")) {
+    if (Date.now() - start > timeoutMs) throw new Error("google.maps.importLibrary not available");
     await new Promise(r => setTimeout(r, intervalMs));
   }
 }
 
-// --- 編集用マップ初期化（クリックでマーカー移動） ---
+// --- 編集用マップ初期化 ---
 async function initEditMap() {
   try {
     console.log("initEditMap called");
@@ -49,43 +35,46 @@ async function initEditMap() {
       return;
     }
 
-    const lat = parseFloat(mapEl.dataset.lat) || 35.6895;
+    // 緯度経度フォールバック
+    const lat = parseFloat(mapEl.dataset.lat) || 35.6895; // 東京駅
     const lng = parseFloat(mapEl.dataset.lng) || 139.6917;
 
-    await waitForImportLibrary(7000);
+    // importLibrary 読み込み待機
+    await waitForImportLibrary();
 
     const { Map } = await google.maps.importLibrary("maps");
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
+    // マップ生成
     const map = new Map(mapEl, {
       zoom: 15,
       center: { lat, lng },
-      mapId: "YOUR_MAP_ID",
+      mapId: mapEl.dataset.mapId || "DEMO_MAP_ID",
+      mapTypeControl: false
     });
 
-    // ドラッグによるマーカー設置を禁止
+    // マーカー生成（ドラッグ禁止）
     const marker = new AdvancedMarkerElement({
       map,
       position: { lat, lng },
       draggable: false
     });
 
-    // hiddenフィールドによる軽度・緯度取得
+    // hidden フィールドに反映
     const latInput = document.getElementById("post_latitude");
     const lngInput = document.getElementById("post_longitude");
 
-    // マップクリックでマーカー移動（AdvancedMarkerElement は .position を更新）
+    // マップクリックでマーカー移動
     map.addListener("click", (event) => {
       const clickedLat = event.latLng.lat();
       const clickedLng = event.latLng.lng();
-
       marker.position = { lat: clickedLat, lng: clickedLng };
-
       if (latInput) latInput.value = clickedLat;
       if (lngInput) lngInput.value = clickedLng;
     });
 
-    console.log("initEditMap: map ready (click only)");
+    console.log("initEditMap: map ready (click to move marker)");
+
   } catch (err) {
     console.error("initEditMap error:", err);
   }

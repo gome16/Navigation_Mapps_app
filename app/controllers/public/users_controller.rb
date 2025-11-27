@@ -4,6 +4,16 @@ class Public::UsersController < ApplicationController
     @posts = @user.posts.order(created_at: :desc)
   end
 
+  # 本番環境でのgooglemap_APIの500エラー回避
+  def posts_json
+    user = User.find(params[:id])
+    posts = user.posts.order(created_at: :desc)
+
+    render json: posts.as_json(
+      only: [:id, :title, :latitude, :longitude, :created_at, :updated_at]
+    )
+  end
+
   # 詳細画面の地図表示
   def posts
     user = User.find(params[:user_id])
