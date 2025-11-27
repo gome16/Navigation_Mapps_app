@@ -1,6 +1,24 @@
 class Public::UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
+    @posts = @user.posts.order(created_at: :desc)
+  end
+
+  # 詳細画面の地図表示
+  def posts
+    user = User.find(params[:user_id])
+    posts = user.posts
+
+    render json: posts.map { |post|
+        {
+        id: post.id,
+        title: post.title,
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        latitude: post.latitude,
+        longitude: post.longitude
+        }
+      }
   end
 
     #退会確認画面
@@ -10,10 +28,11 @@ class Public::UsersController < ApplicationController
 
   #退会用アクション
   def withdraw
-    @user=current_user
+    @user = current_user
     @user.update(is_deleted: true)
+    current_user.posts.destroy_all
     reset_session
-    flash[:notice] = "退会が完了しました" 
+    flash[:alert] = "退会が完了しました" 
     redirect_to root_path
   end
 end

@@ -12,8 +12,12 @@ Rails.application.routes.draw do
         get "unsubscribe"
         patch "withdraw"
       end
+
+      get "posts", to: "users#posts"
     end
 
+    resources :posts
+    
     root to: "homes#top"
     get 'homes/about'
   end

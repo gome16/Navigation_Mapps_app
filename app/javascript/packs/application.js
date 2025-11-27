@@ -17,3 +17,16 @@ window.jQuery = window.$ = jQuery
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+
+
+// 一覧投稿から投稿詳細画面へのリンク
+document.addEventListener("turbolinks:load", () => {
+  document.querySelectorAll("tr.post-row").forEach((row) => {
+    row.addEventListener("click", () => {
+      const href = row.dataset.href;
+      if (href) {
+        window.location.href = href;
+      }
+    });
+  });
+});
