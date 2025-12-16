@@ -1,41 +1,84 @@
-// post/newにて地図上でクリックしてそのマーカー位置を保存する機能
+// ======================================================
+// map_new.js (app/javascript/packs/map_new.js)
+// ======================================================
+console.log("MAP_NEW.JS loaded");
 
-// ブートストラップ ローダ <%= javascript_pack_tag 'map', 'data-turbolinks-track': 'reload' %>を読み込む記載
-(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-  key: process.env.Maps_API_Key
-});
+// --- Google Maps ローダー ---
+if (!window.googleMapsLoaderAdded) {
+  window.googleMapsLoaderAdded = true;
 
-let map;
-let marker = null;
-
-async function initNewPostMap() {
-  const { Map } = await google.maps.importLibrary("maps");
-
-  map = new Map(document.getElementById("map"), {
-    center: { lat: 35.681236, lng: 139.767125 }, 
-    zoom: 15,
-    mapTypeControl: false
-  });
-
-  // 地図クリックでマーカー設置
-  map.addListener("click", (event) => {
-    const lat = event.latLng.lat();
-    const lng = event.latLng.lng();
-
-    // すでにマーカーがある場合は移動
-    if (marker) {
-      marker.setPosition(event.latLng);
-    } else {
-      marker = new google.maps.Marker({
-        position: event.latLng,
-        map: map
-      });
-    }
-
-    // hidden_field にセット
-    document.getElementById("post_latitude").value = lat;
-    document.getElementById("post_longitude").value = lng;
-  });
+  const apiKey = process.env.Maps_API_Key || "YOUR_API_KEY";
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
 }
 
-initNewPostMap();
+// --- importLibrary が使えるまで待機 ---
+async function waitForImportLibrary(timeoutMs = 5000, intervalMs = 100) {
+  const start = Date.now();
+  while (!(window.google && google.maps && typeof google.maps.importLibrary === "function")) {
+    if (Date.now() - start > timeoutMs) throw new Error("google.maps.importLibrary not available");
+    await new Promise(r => setTimeout(r, intervalMs));
+  }
+}
+
+// --- 新規投稿マップ初期化 ---
+async function initNewPostMap() {
+  try {
+    const mapEl = document.getElementById("map");
+    if (!mapEl) {
+      console.log("initNewPostMap: #map not found");
+      return;
+    }
+
+    await waitForImportLibrary();
+
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+    const map = new Map(mapEl, {
+      center: { lat: 35.681236, lng: 139.767125 }, // 東京駅
+      zoom: 15,
+      mapId: "YOUR_ACTUAL_MAP_ID",
+      mapTypeControl: false
+    });
+
+    let marker = null;
+
+    map.addListener("click", (event) => {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+
+      if (marker) {
+        marker.position = { lat, lng };
+      } else {
+        marker = new AdvancedMarkerElement({
+          position: { lat, lng },
+          map: map
+        });
+      }
+
+      const latInput = document.getElementById("post_latitude");
+      const lngInput = document.getElementById("post_longitude");
+      if (latInput) latInput.value = lat;
+      if (lngInput) lngInput.value = lng;
+    });
+
+    console.log("initNewPostMap: map ready");
+
+  } catch (err) {
+    console.error("initNewPostMap error:", err);
+  }
+}
+
+// Turbo / Turbolinks 対応
+document.addEventListener("turbo:load", initNewPostMap);
+document.addEventListener("turbo:render", initNewPostMap);
+document.addEventListener("turbolinks:load", initNewPostMap);
+
+// ページロード保険
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  setTimeout(() => initNewPostMap(), 0);
+}
