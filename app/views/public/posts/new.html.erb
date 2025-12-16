@@ -37,6 +37,7 @@
             </div>
 
             <%= f.submit "投稿する", class: "btn btn-primary" %>
+            <%= link_to "戻る", request.referer || posts_path, class: "btn btn-secondary" %>
           <% end %>
         </div>
       </div>
