@@ -23,7 +23,7 @@
                 <%= f.label :title, "タイトル", class: "form-label" %>
               </div>
               <div class="col-md-10">
-                <%= f.text_field :title, class: "form-control" %>
+                <%= f.text_field :title, required: true, class: "form-control" %>
               </div>
             </div>
 
@@ -37,6 +37,7 @@
             </div>
 
             <%= f.submit "投稿する", class: "btn btn-primary" %>
+            <%= link_to "戻る", request.referer || posts_path, class: "btn btn-secondary" %>
           <% end %>
         </div>
       </div>

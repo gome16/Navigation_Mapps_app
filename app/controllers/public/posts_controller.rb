@@ -1,17 +1,18 @@
 class Public::PostsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user!, only: %i[new create edit update destroy]
+  before_action :set_post, only: %i[show edit update destroy]
 
   def index
     @posts = Post.all
 
     respond_to do |format|
-      format.html # HTML リクエスト時
-      format.json # JSON リクエスト時
+      format.html
+      format.json
     end
   end
 
   def show
-    @post = Post.find_by(id: params[:id])
+    # set_post で 定義
   end
 
   def new
@@ -23,39 +24,35 @@ class Public::PostsController < ApplicationController
     @post.user_id = current_user.id
 
     if @post.save
-      flash[:notice] = "投稿完了しました"
-      redirect_to post_path(@post)
+      redirect_to post_path(@post), notice: "投稿完了しました"
     else
       render :new
     end
   end
 
   def edit
-    @post = Post.find(params[:id])
+    # set_post で 定義
   end
 
   def update
-    @post = Post.find(params[:id])
-
     if @post.update(post_params)
-      flash[:notice] = "変更されました"
-      redirect_to post_path(@post)
+      redirect_to post_path(@post), notice: "変更されました"
     else
       render :edit
     end
   end
 
   def destroy
-    post = Post.find(params[:id])
-    if post.destroy
-      flash[:alert] = "投稿を削除しました"
-      redirect_to posts_path
-    else
-      render :edit
-    end
+    @post.destroy
+    redirect_to posts_path, alert: "投稿を削除しました"
   end
 
   private
+
+  def set_post
+    @post = Post.find(params[:id])
+  end
+
   def post_params
     params.require(:post).permit(:address, :title, :comment, :latitude, :longitude)
   end
