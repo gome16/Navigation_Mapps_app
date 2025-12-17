@@ -20,12 +20,16 @@
 
     <!-- 下部投稿詳細画面 -->
     <div class="col-md-12 mt-2">
-      <div class="card">        
+      <div class="card">
         <div class="card-body">
-          <h4>投稿詳細</h4>
-          <hr>
-          <%= link_to user_path(@post.user) do %>
-            <h5><%= @post.user.user_name %></h5>
+          <%= link_to user_path(@post.user), class: "d-flex align-items-center text-decoration-none text-dark" do %>
+            <div class="me-2">
+              <%= image_tag current_user.get_profile_image(100, 100),
+                    class: "rounded-circle",
+                    style: "width:60px; height:60px; object-fit:cover;" %>
+            </div>
+
+            <h6 class="mb-0"><%= @post.user.user_name %></h6>
           <% end %>
           <hr>
           <h5><%= @post.comment %><h5>
@@ -33,6 +37,7 @@
           <p>投稿日時: <%= @post.created_at.strftime("%Y-%m-%d %H:%M") %></p>
           <% if @post.created_at != @post.updated_at %>
             <p>更新日時: <%= @post.updated_at.strftime("%Y-%m-%d %H:%M") %></p>
+          <% else %>          
           <% end %>
           <hr>
           <% if @post.user_id == current_user.id %>
