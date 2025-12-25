@@ -42,6 +42,7 @@
           <hr>
           <% if @post.user_id == current_user.id %>
             <%= link_to "編集", edit_post_path(@post), class: "btn btn-success" %>
+          <% else %>
           <% end %>
         </div>
       </div>
