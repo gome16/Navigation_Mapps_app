@@ -3,7 +3,7 @@ class Public::PostsController < ApplicationController
   before_action :set_post, only: %i[show edit update destroy]
 
   def index
-    @posts = Post.all
+    Post.order(updated_at: :desc)
 
     respond_to do |format|
       format.html
