@@ -1,6 +1,8 @@
 class Public::PostsController < ApplicationController
   before_action :authenticate_user!, only: %i[new create edit update destroy]
-  before_action :set_post, only: %i[show edit update destroy]
+  before_action :set_post, only: %i[show]
+  before_action :set_post_edit, only: %i[ edit update destroy]
+  before_action :authorize_post!, only: [:edit, :update, :destroy]
 
   def index
     @posts = Post.order(updated_at: :desc)
@@ -51,6 +53,16 @@ class Public::PostsController < ApplicationController
 
   def set_post
     @post = Post.find(params[:id])
+  end
+
+  def set_post_edit
+    @post = current_user.posts.find(params[:id])
+  end
+
+  def authorize_post!
+    unless @post.user == current_user
+      redirect_to posts_path, alert: "権限がありません"
+    end
   end
 
   def post_params
