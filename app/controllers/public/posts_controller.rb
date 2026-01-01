@@ -5,7 +5,10 @@ class Public::PostsController < ApplicationController
   before_action :authorize_post!, only: [:edit, :update, :destroy]
 
   def index
-    @posts = Post.order(updated_at: :desc)
+    @posts = Post
+    .order(updated_at: :desc)
+    .page(params[:page])
+    .per(5)
 
     respond_to do |format|
       format.html

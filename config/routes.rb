@@ -8,12 +8,14 @@ Rails.application.routes.draw do
 
   scope module: :public do
     resources :users, only: [:show, :edit] do
-      collection do
-        get "unsubscribe"
-        patch "withdraw"
+      member do
+        get :posts
       end
 
-      get "posts", to: "users#posts"
+      collection do
+        get :unsubscribe
+        patch :withdraw
+      end
     end
 
     resources :posts
