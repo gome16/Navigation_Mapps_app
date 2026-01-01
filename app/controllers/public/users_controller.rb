@@ -1,7 +1,10 @@
 class Public::UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
-    @posts = @user.posts.order(updated_at: :desc)
+    @posts = @user.posts
+      .order(updated_at: :desc)
+      .page(params[:page])
+      .per(5)
   end
 
   # 本番環境でのgooglemap_APIの500エラー回避
@@ -16,20 +19,18 @@ class Public::UsersController < ApplicationController
 
   # 詳細画面の地図表示
   def posts
-    user = User.find(params[:user_id])
-    posts = user.posts
+    user = User.find(params[:id])
 
-    render json: posts.map { |post|
-        {
-        id: post.id,
-        title: post.title,
-        created_at: post.created_at,
-        updated_at: post.updated_at,
-        latitude: post.latitude,
-        longitude: post.longitude
-        }
-      }
+    posts = user.posts
+                .order(updated_at: :desc)
+                .page(params[:page])
+                .per(5)
+
+    render json: posts.as_json(
+      only: [:id, :title, :latitude, :longitude, :created_at, :updated_at]
+    )
   end
+
 
     #退会確認画面
   def unsubscribe
