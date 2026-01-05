@@ -8,18 +8,24 @@ Rails.application.routes.draw do
 
   scope module: :public do
     resources :users, only: [:show, :edit] do
-      collection do
-        get "unsubscribe"
-        patch "withdraw"
+      member do
+        get :posts
       end
 
-      get "posts", to: "users#posts"
+      collection do
+        get :unsubscribe
+        patch :withdraw
+      end
     end
 
     resources :posts
     
     root to: "homes#top"
     get 'homes/about'
+
+    #　ゲストログイン
+    devise_scope :user do
+       post 'users/guest_sign_in', to: 'users/sessions#guest_sign_in'
+    end
   end
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

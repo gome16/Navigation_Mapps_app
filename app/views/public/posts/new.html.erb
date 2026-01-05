@@ -5,6 +5,7 @@
       <h4>新規投稿</h4>
       <div class="card">
         <div class="card-body">
+          <p>投稿する場所をクリックすることにより指定できます</p>
           <div id="map"></div>
         </div>
       </div>
@@ -20,7 +21,7 @@
 
             <div class="row mb-3 align-items-center">
               <div class="col-md-2 mr-0">
-                <%= f.label :title, "タイトル", class: "form-label" %>
+                <%= f.label :title, "タイトル（＊必須）", class: "form-label" %>
               </div>
               <div class="col-md-10">
                 <%= f.text_field :title, required: true, class: "form-control" %>

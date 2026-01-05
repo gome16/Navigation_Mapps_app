@@ -24,7 +24,7 @@
         <div class="card-body">
           <%= link_to user_path(@post.user), class: "d-flex align-items-center text-decoration-none text-dark" do %>
             <div class="me-2">
-              <%= image_tag current_user.get_profile_image(100, 100),
+              <%= image_tag @post.user.get_profile_image(100, 100),
                     class: "rounded-circle",
                     style: "width:60px; height:60px; object-fit:cover;" %>
             </div>
@@ -41,7 +41,8 @@
           <% end %>
           <hr>
           <% if @post.user_id == current_user.id %>
-            <%= link_to "編集", edit_post_path(@post), class: "btn btn-success" %>
+            <%= link_to "編集 ・ 削除", edit_post_path(@post), class: "btn btn-success" %>
+          <% else %>
           <% end %>
         </div>
       </div>

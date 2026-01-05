@@ -4,6 +4,7 @@
     <div class="col-md-12 mt-5 ">
       <h4>投稿一覧</h4>
       <div class="card">
+        <p>マーカーをクリックすることにより投稿の情報を確認できます</p>
         <div class="card-body">
           <div id="map"></div>
         </div>
@@ -67,6 +68,7 @@
               <% end %>
             </tbody>
           </table>
+          <%= paginate @posts %>
         </div>
       </div>
     </div>
