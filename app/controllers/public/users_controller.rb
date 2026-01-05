@@ -1,4 +1,6 @@
 class Public::UsersController < ApplicationController
+  before_action :ensure_normal_user, only: [:unsubscribe, :withdraw]
+
   def show
     @user = User.find(params[:id])
     @posts = @user.posts
@@ -45,5 +47,15 @@ class Public::UsersController < ApplicationController
     reset_session
     flash[:alert] = "退会が完了しました" 
     redirect_to root_path
+  end
+
+  protected
+  
+  #ゲストユーザーの編集・削除を禁止する処理
+  def ensure_normal_user
+    if resource.email == 'guest@example.com'
+      flash.now[:notice] = "ゲストユーザーの削除はできません。"
+      render show
+    end
   end
 end

@@ -14,4 +14,17 @@ class User < ApplicationRecord
     end
       profile_image.variant(resize_to_limit: [width, height]).processed
   end
+
+  # ゲストログイン用メソッド
+  def self.guest
+    find_or_create_by!(email: 'guest@example.com') do |user|
+      user.password = SecureRandom.urlsafe_base64
+      user.user_name = "ゲストユーザー"
+      user.profile = <<~TEXT
+        このアカウントはゲストユーザー用アカウントです。
+        どなたでもご利用できます。
+        ゲストアカウントの編集・削除はできません。
+      TEXT
+    end
+  end
 end
