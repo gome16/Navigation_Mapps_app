@@ -1,11 +1,13 @@
 // ======================================================
-// users/show ページ用 地図初期化
+// users/show ページにて地図を表示する機能
 // ======================================================
 console.log("map_user_show.js loaded");
 
+// ----------------------
+// Google Maps Loader（1回だけ）
+// ----------------------
 async function loadGoogleMaps() {
   if (window.googleMapsLoaderAdded) {
-    console.log("Google Maps already loaded");
     return;
   }
 
@@ -21,43 +23,55 @@ async function loadGoogleMaps() {
   });
 }
 
+
+// 地図初期化（毎回 マップ読み込み）
 async function initUserPostsMap() {
   const mapEl = document.getElementById("user-posts-map");
   if (!mapEl) {
-    console.log("#user-posts-map not found");
     return;
   }
 
-  // Google Maps API を読み込む
+  const userId = mapEl.dataset.userId;
+  if (!userId) {
+    console.error("data-user-id not found");
+    return;
+  }
+
+  // Google Maps API ロード
   if (!window.google || !google.maps || !google.maps.importLibrary) {
-    console.log("Google Maps not loaded, loading now...");
     await loadGoogleMaps();
   }
 
   const { Map } = await google.maps.importLibrary("maps");
 
-  // 新規 map を生成（キャッシュは使わない）
+  // 新規 map 生成（キャッシュしない）
   const map = new Map(mapEl, {
-    zoom: 15,
-    center: { lat: 35.0, lng: 135.0 },
+    center: { lat: 35.681236, lng: 139.767125 }, // 東京
+    zoom: 5,
     mapId: "YOUR_MAP_ID",
   });
-
-  // ユーザーID取得
-  const userId = window.location.pathname.split("/").pop();
 
   try {
     const response = await fetch(`/users/${userId}/posts`);
     const posts = await response.json();
 
     if (!Array.isArray(posts)) {
-      console.error("Posts JSON invalid:", posts);
-      return map;
+      console.error("Invalid posts JSON:", posts);
+      return;
+    }
+
+    // 投稿が0件の場合の座標
+    if (posts.length === 0) {
+      map.setCenter({ lat: 35.681236, lng: 139.767125 });
+      map.setZoom(15);
+      return;
     }
 
     const bounds = new google.maps.LatLngBounds();
 
     posts.forEach((post) => {
+      if (!post.latitude || !post.longitude) return;
+
       let updatedInfo = "";
       if (post.updated_at && post.updated_at !== post.created_at) {
         updatedInfo = `<p class="mb-0">更新日: ${new Date(post.updated_at).toLocaleString()}</p>`;
@@ -81,32 +95,36 @@ async function initUserPostsMap() {
         content: infoWindowContent,
       });
 
-      marker.addListener("click", () => infoWindow.open(map, marker));
+      marker.addListener("click", () => {
+        infoWindow.open(map, marker);
+      });
+
       bounds.extend({ lat: post.latitude, lng: post.longitude });
     });
 
-    // 全マーカーを収める
+    // マーカーがある場合、マーカーの中心に座標を移動させる
     map.fitBounds(bounds);
+
     google.maps.event.addListenerOnce(map, "bounds_changed", () => {
-      if (map.getZoom() > 15) map.setZoom(15);
+      if (map.getZoom() > 15) {
+        map.setZoom(15);
+      }
     });
 
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error("Error loading user posts:", error);
   }
 
   console.log("User posts map initialized");
-  return map;
 }
 
-// ----------------------
-// Turbo / Turbolinks 対応
-// ----------------------
-document.addEventListener("turbo:load", () => initUserPostsMap());
-document.addEventListener("turbo:render", () => initUserPostsMap());
-document.addEventListener("turbolinks:load", () => initUserPostsMap());
 
-// ページロード時の保険
+// Turbo / Turbolinks　対応
+document.addEventListener("turbo:load", initUserPostsMap);
+document.addEventListener("turbo:render", initUserPostsMap);
+document.addEventListener("turbolinks:load", initUserPostsMap);
+
+// 初回ロード保険
 if (document.readyState === "complete" || document.readyState === "interactive") {
-  setTimeout(() => initUserPostsMap(), 0);
+  setTimeout(initUserPostsMap, 0);
 }
