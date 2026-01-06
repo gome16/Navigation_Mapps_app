@@ -23,7 +23,8 @@
  - 災害情報を確認しなければならない時​
 
 ## 設計書
-「後ほど作成予定」
+ - [ER図](https://app.diagrams.net/#G1EyQDNi73nIclUQg55wprcwzuo6dJy6Y5#%7B%22pageId%22%3A%22gJbGNGSnNvVYzziURzqt%22%7D)
+ - [AWS構成図](https://app.diagrams.net/#G1s8gPWeX9WKX30xZWpwcVlJGwYx0AfwtL#%7B%22pageId%22%3A%22gJbGNGSnNvVYzziURzqt%22%7D)
 
 ## 開発環境
 - OS：Mac
