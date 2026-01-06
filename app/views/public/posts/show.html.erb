@@ -40,7 +40,7 @@
           <% else %>          
           <% end %>
           <hr>
-          <% if @post.user_id == current_user.id %>
+          <% if current_user&.id == @post.user_id %>
             <%= link_to "編集 ・ 削除", edit_post_path(@post), class: "btn btn-success" %>
           <% else %>
           <% end %>
