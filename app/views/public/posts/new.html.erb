@@ -8,6 +8,12 @@
           <p>投稿する場所をクリックすることにより指定できます</p>
           <div id="map"></div>
         </div>
+        <div class="mb-2">
+          <button type="button" onclick="setMode('marker')" class="btn btn-sm btn-outline-primary">マーカー</button>
+          <button type="button" onclick="setMode('polyline')" class="btn btn-sm btn-outline-success">線</button>
+          <button type="button" onclick="setMode('polygon')" class="btn btn-sm btn-outline-warning">範囲</button>
+          <button type="button" onclick="undoLast()" class="btn btn-sm btn-outline-danger">取消</button>
+        </div>
       </div>
     </div>
 
@@ -36,7 +42,9 @@
                 <%= f.text_area :comment, class: "form-control" %>
               </div>
             </div>
-
+            
+            # オブジェクトデータをjson形式で保存する
+            <%= f.hidden_field :shapes, id: "post_shapes" %>
             <%= f.submit "投稿する", class: "btn btn-primary" %>
             <%= link_to "戻る", request.referer || posts_path, class: "btn btn-secondary" %>
           <% end %>
