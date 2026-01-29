@@ -1,17 +1,17 @@
 <div class="container justify-content-center align-items-center">
   <div class="row">
+
     <!-- 地図表示画面 -->
-    <div class="col-md-12 mt-5 ">
+    <div class="col-md-12 mt-5">
       <h4><%= @post.title %></h4>
+
       <div class="card">
         <div class="card-body">
           <div id="map"
             data-lat="<%= @post.latitude || 35.681236 %>"
-            data-lng="<%= @post.longitude || 139.767125 %>">
+            data-lng="<%= @post.longitude || 139.767125 %>"
             data-map-id="DEMO_MAP_ID"
-            data-posts='<%= raw(@post.to_json(
-                methods: [:latitude, :longitude, :title, :created_at, :updated_at]
-              )) %>' 
+            data-shapes='<%= raw @post.shapes.to_json %>'
             style="height: 500px;">
           </div>
         </div>
@@ -22,32 +22,43 @@
     <div class="col-md-12 mt-2">
       <div class="card">
         <div class="card-body">
-          <%= link_to user_path(@post.user), class: "d-flex align-items-center text-decoration-none text-dark" do %>
+
+          <%= link_to user_path(@post.user),
+              class: "d-flex align-items-center text-decoration-none text-dark" do %>
+
             <div class="me-2">
               <%= image_tag @post.user.get_profile_image(100, 100),
-                    class: "rounded-circle",
-                    style: "width:60px; height:60px; object-fit:cover;" %>
+                class: "rounded-circle",
+                style: "width:60px; height:60px; object-fit:cover;" %>
             </div>
 
             <h6 class="mb-0"><%= @post.user.user_name %></h6>
+
           <% end %>
+
           <hr>
-          <h5><%= @post.comment %><h5>
+
+          <h5><%= @post.comment %></h5>
+
           <hr>
+
           <p>投稿日時: <%= @post.created_at.strftime("%Y-%m-%d %H:%M") %></p>
+
           <% if @post.created_at != @post.updated_at %>
             <p>更新日時: <%= @post.updated_at.strftime("%Y-%m-%d %H:%M") %></p>
-          <% else %>          
           <% end %>
+
           <hr>
+
           <% if current_user&.id == @post.user_id %>
             <%= link_to "編集 ・ 削除", edit_post_path(@post), class: "btn btn-success" %>
-          <% else %>
           <% end %>
+
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
-<%= javascript_pack_tag 'map_show'%>
+<%= javascript_pack_tag 'map_show', 'data-turbo-track': 'reload' %>

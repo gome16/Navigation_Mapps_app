@@ -1,81 +1,225 @@
 // ======================================================
-// posts/show ページにてそのユーザーの地図を表示する機能
+// posts/show 複数オブジェクト表示（安定版）
 // ======================================================
 
 console.log("MAP_SHOW.JS loaded");
 
-// --- Google Maps ローダー ---
+// ==============================
+// Google Maps ローダー
+// ==============================
+
 if (!window.googleMapsLoaderAdded) {
+
   window.googleMapsLoaderAdded = true;
-  (g => {
-    let h, a, k, p = "The Google Maps JavaScript API",
-      c = "google", l = "importLibrary", q = "__ib__", m = document, b = window;
-    b = b[c] || (b[c] = {});
-    let d = b.maps || (b.maps = {}), r = new Set(), e = new URLSearchParams(),
-      u = () => h || (h = new Promise(async (f, n) => {
-        a = m.createElement("script");
-        e.set("libraries", [...r] + "");
-        for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-        e.set("callback", c + ".maps." + q);
-        a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-        d[q] = f;
-        a.onerror = () => h = n(Error(p + " could not load."));
-        a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-        m.head.append(a);
-      }));
-    d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n));
-  })({ key: process.env.Maps_API_Key });
+
+  const apiKey = process.env.Maps_API_Key || "YOUR_API_KEY";
+
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
 }
 
-// --- importLibrary が使えるまで待つ ---
-async function waitForImportLibrary(timeoutMs = 5000, intervalMs = 100) {
+// ==============================
+// importLibrary 待機
+// ==============================
+
+async function waitForImportLibrary(timeoutMs = 7000, intervalMs = 100) {
+
   const start = Date.now();
-  while (true) {
-    if (window.google && google.maps && typeof google.maps.importLibrary === "function") return;
-    if (Date.now() - start > timeoutMs) throw new Error("google.maps.importLibrary not available within timeout");
+
+  while (!(window.google && google.maps && typeof google.maps.importLibrary === "function")) {
+
+    if (Date.now() - start > timeoutMs) {
+      throw new Error("google.maps.importLibrary not available");
+    }
+
     await new Promise(r => setTimeout(r, intervalMs));
   }
 }
 
-// --- 初期化 ---
+// ==============================
+// 初期化
+// ==============================
+
 async function initShowMap() {
+
   try {
+
     const mapEl = document.getElementById("map");
     if (!mapEl) return;
 
-    const lat = parseFloat(mapEl.dataset.lat) || 35.681236;
-    const lng = parseFloat(mapEl.dataset.lng) || 139.767125;
-    const title = mapEl.dataset.title || "無題";
-    const userName = mapEl.dataset.userName || "名無し";
-    const userImage = mapEl.dataset.userImage || "/default_profile.jpg";
+    // ------------------
+    // dataset 読み込み
+    // ------------------
 
-    await waitForImportLibrary(7000, 100);
+    const lat = Number(mapEl.dataset.lat) || 35.681236;
+    const lng = Number(mapEl.dataset.lng) || 139.767125;
+
+    // shapes 安全取得
+    let shapes = [];
+
+    try {
+      const raw = mapEl.dataset.shapes;
+
+      if (raw && raw.length > 0) {
+        shapes = JSON.parse(raw);
+      }
+
+    } catch (e) {
+      console.error("shapes JSON parse error:", e);
+      shapes = [];
+    }
+
+    // ------------------
+    // Google Maps 読み込み
+    // ------------------
+
+    await waitForImportLibrary();
+
     const { Map } = await google.maps.importLibrary("maps");
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
+    // ------------------
+    // Map 初期化
+    // ------------------
+
     const map = new Map(mapEl, {
-      zoom: 15,
       center: { lat, lng },
+      zoom: 15,
       mapId: mapEl.dataset.mapId || "DEMO_MAP_ID",
       mapTypeControl: false
     });
 
-    const marker = new AdvancedMarkerElement({
-      map,
-      position: { lat, lng },
-      title: title
-    });
+    console.log("Map initialized");
 
-    console.log("initShowMap: map created successfully");
+    const bounds = new google.maps.LatLngBounds();
+
+    // ==============================
+    // shapes 描画
+    // ==============================
+
+    if (Array.isArray(shapes) && shapes.length > 0) {
+
+      shapes.forEach(obj => {
+
+        // ===== Marker =====
+
+        if (obj.type === "marker") {
+
+          const position = {
+            lat: Number(obj.lat),
+            lng: Number(obj.lng)
+          };
+
+          new AdvancedMarkerElement({
+            map,
+            position
+          });
+
+          bounds.extend(position);
+        }
+
+        // ===== Polyline =====
+
+        if (obj.type === "polyline" && Array.isArray(obj.points)) {
+
+          const path = obj.points.map(p => ({
+            lat: Number(p.lat),
+            lng: Number(p.lng)
+          }));
+
+          new google.maps.Polyline({
+            path,
+            map
+          });
+
+          path.forEach(p => bounds.extend(p));
+        }
+
+        // ===== Polygon =====
+
+        if (obj.type === "polygon" && Array.isArray(obj.points)) {
+
+          const path = obj.points.map(p => ({
+            lat: Number(p.lat),
+            lng: Number(p.lng)
+          }));
+
+          new google.maps.Polygon({
+            paths: path,
+            map
+          });
+
+          path.forEach(p => bounds.extend(p));
+        }
+
+        // ===== Circle =====
+
+        if (obj.type === "circle" && obj.center) {
+
+          const center = {
+            lat: Number(obj.center.lat),
+            lng: Number(obj.center.lng)
+          };
+
+          new google.maps.Circle({
+            center,
+            radius: Number(obj.radius),
+            map
+          });
+
+          bounds.extend(center);
+        }
+
+      });
+
+      // ------------------
+      // 自動ズーム
+      // ------------------
+
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds);
+      }
+
+    } else {
+
+      // ==============================
+      // shapes無し（旧投稿フォールバック）
+      // ==============================
+
+      const position = { lat, lng };
+
+      new AdvancedMarkerElement({
+        map,
+        position
+      });
+
+      map.setCenter(position);
+    }
+
+    console.log("initShowMap completed");
+
   } catch (err) {
+
     console.error("initShowMap error:", err);
+
   }
 }
 
-// --- Turbo/Turbolinks 対応 ---
+// ==============================
+// Turbo / Turbolinks 対応
+// ==============================
+
 document.addEventListener("turbo:load", initShowMap);
 document.addEventListener("turbo:render", initShowMap);
 document.addEventListener("turbolinks:load", initShowMap);
+
+// ==============================
+// 初回ロード保険
+// ==============================
+
 if (document.readyState === "complete" || document.readyState === "interactive") {
-  setTimeout(() => initShowMap(), 0);
+  setTimeout(initShowMap, 0);
 }
