@@ -1,5 +1,5 @@
 // ======================================================
-// posts/show 複数オブジェクト表示（安定版）
+// posts/show マーカの以外のオブジェクト表示
 // ======================================================
 
 console.log("MAP_SHOW.JS loaded");
@@ -97,7 +97,7 @@ async function initShowMap() {
     const bounds = new google.maps.LatLngBounds();
 
     // ==============================
-    // shapes 描画
+    // shapes（オブジェクト）描画
     // ==============================
 
     if (Array.isArray(shapes) && shapes.length > 0) {
@@ -121,7 +121,7 @@ async function initShowMap() {
           bounds.extend(position);
         }
 
-        // ===== Polyline =====
+        // ===== Polyline（線） =====
 
         if (obj.type === "polyline" && Array.isArray(obj.points)) {
 
@@ -138,7 +138,7 @@ async function initShowMap() {
           path.forEach(p => bounds.extend(p));
         }
 
-        // ===== Polygon =====
+        // ===== Polygon（範囲） =====
 
         if (obj.type === "polygon" && Array.isArray(obj.points)) {
 

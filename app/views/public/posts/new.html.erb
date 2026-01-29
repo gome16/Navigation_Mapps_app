@@ -43,7 +43,6 @@
               </div>
             </div>
             
-            # オブジェクトデータをjson形式で保存する
             <%= f.hidden_field :shapes, id: "post_shapes" %>
             <%= f.submit "投稿する", class: "btn btn-primary" %>
             <%= link_to "戻る", request.referer || posts_path, class: "btn btn-secondary" %>

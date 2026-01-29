@@ -7,8 +7,9 @@
         <div class="card-body">
           <p>投稿する場所をクリックすることにより指定できます</p>
           <div id="map"
-            data-lat="<%= @post&.latitude || 35.6895 %>"
-            data-lng="<%= @post&.longitude || 139.6917 %>"
+            data-lat="<%= @post.latitude || 35.6895 %>"
+            data-lng="<%= @post.longitude || 139.6917 %>"
+            data-shapes='<%= raw @post.shapes.to_json %>'
             style="height: 400px;">
           </div>
         </div>
@@ -22,6 +23,13 @@
           <%= form_with(model: @post) do |f| %>
             <%= f.hidden_field :latitude, id: "post_latitude" %>
             <%= f.hidden_field :longitude, id: "post_longitude" %>
+            <%= f.hidden_field :shapes, id: "post_shapes" %>
+            <div class="mb-2">
+              <button type="button" onclick="setMode('marker')" class="btn btn-sm btn-outline-primary">マーカー</button>
+              <button type="button" onclick="setMode('polyline')" class="btn btn-sm btn-outline-success">線</button>
+              <button type="button" onclick="setMode('polygon')" class="btn btn-sm btn-outline-warning">範囲</button>
+              <button type="button" onclick="undoLast()" class="btn btn-sm btn-outline-danger">取消</button>
+            </div>
 
             <div class="row mb-3 align-items-center">
               <div class="col-md-2 mr-0">
@@ -42,6 +50,7 @@
             </div>
 
             <div class="d-flex flex-column flex-md-row justify-content-between mt-3">
+              <%= hidden_field_tag "post[shapes]", @post.shapes, id: "post_shapes" %>
               <%= f.submit "変更する", class: "btn btn-success mb-2 mb-md-0" %>
               <%= link_to "削除する", post_path(@post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger" %>
             </div>
