@@ -6,6 +6,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # admin/publicユーザー切り替え  
+  enum role: { user: 0, admin: 1 }
+
   #　プロフィールイメージフォント調整  
   def get_profile_image(width, height)
     unless profile_image.attached?

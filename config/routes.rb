@@ -6,6 +6,11 @@ Rails.application.routes.draw do
       registrations: 'public/users/registrations',
     }
 
+    namespace :admin do
+      root to: "users#index"
+      resources :users
+    end
+
   scope module: :public do
     resources :users, only: [:show, :edit] do
       member do
