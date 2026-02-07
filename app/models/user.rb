@@ -9,6 +9,11 @@ class User < ApplicationRecord
   # admin/publicユーザー切り替え  
   enum role: { user: 0, admin: 1 }
 
+  # 管理者のユーザーban（または解除）機能
+  def status_label
+    is_deleted ? "退会" : "有効"
+  end
+
   #　プロフィールイメージフォント調整  
   def get_profile_image(width, height)
     unless profile_image.attached?

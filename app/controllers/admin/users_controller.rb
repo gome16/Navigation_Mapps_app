@@ -3,6 +3,12 @@ class Admin::UsersController < Admin::BaseController
     @users = User.page(params[:page])
   end
 
+  def toggle_deleted
+    user = User.find(params[:id])
+    user.update!(is_deleted: !user.is_deleted)
+    redirect_to admin_users_path
+  end
+
   def show
   end
 

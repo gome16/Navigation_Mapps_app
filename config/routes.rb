@@ -8,9 +8,14 @@ Rails.application.routes.draw do
 
     namespace :admin do
       root to: "users#index"
-      resources :users
-    end
 
+      resources :users do
+        member do
+          patch :toggle_deleted
+        end
+      end
+    end
+    
   scope module: :public do
     resources :users, only: [:show, :edit] do
       member do
