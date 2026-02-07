@@ -15,6 +15,10 @@ class ApplicationController < ActionController::Base
 
    # サインイン後の遷移先指定
   def after_sign_in_path_for(resource)
-    posts_path
+    if resource.respond_to?(:admin?) && resource.admin?
+      admin_root_path
+    else
+      posts_path
+    end
   end
 end
